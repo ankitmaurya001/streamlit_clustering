@@ -46,7 +46,7 @@ except ImportError:
             "--global-option=build_ext",
             "--global-option=-L/home/appuser/lib/",
             "--global-option=-I/home/appuser/include/",
-            "ta-lib==0.4.0",
+            "ta-lib",
         ]
     )
 finally:
