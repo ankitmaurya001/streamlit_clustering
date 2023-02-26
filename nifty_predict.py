@@ -44,8 +44,8 @@ except ImportError:
             "pip",
             "install",
             "--global-option=build_ext",
-            "--global-option=-L/home/appuser/lib/",
-            "--global-option=-I/home/appuser/include/",
+            "--global-option=-L/home/appuser/lib",
+            "--global-option=-I/home/appuser/include",
             "ta-lib",
         ]
     )
