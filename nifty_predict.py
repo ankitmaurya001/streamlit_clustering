@@ -20,10 +20,10 @@ if not os.path.isdir("/tmp/ta-lib"):
     os.chdir("/tmp/ta-lib")
     os.system("ls -la /app/equity/")
     # build
-    os.system("./configure --prefix=/home/appuser")
-    os.system("make")
+    os.system("sudo ./configure --prefix=/home/appuser")
+    os.system("sudo make")
     # install
-    os.system("make install")
+    os.system("sudo make install")
     # try pip install
     os.system("pip install ta-lib")
     # back to the cwd
