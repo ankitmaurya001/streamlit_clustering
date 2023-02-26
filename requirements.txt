@@ -71,3 +71,4 @@ validators==0.20.0
 webencodings==0.5.1
 yfinance==0.2.12
 zipp==3.15.0
+requests
