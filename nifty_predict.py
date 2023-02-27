@@ -4,53 +4,53 @@ import os
 import sys
 import subprocess
 
-# check if the library folder already exists, to avoid building everytime you load the pahe
-if not os.path.isdir("/tmp/ta-lib"):
-    # Download ta-lib to disk
-    with open("/tmp/ta-lib-0.4.0-src.tar.gz", "wb") as file:
-        response = requests.get(
-            "http://prdownloads.sourceforge.net/ta-lib/ta-lib-0.4.0-src.tar.gz"
-        )
-        file.write(response.content)
-    # get our current dir, to configure it back again. Just house keeping
-    default_cwd = os.getcwd()
-    os.chdir("/tmp")
-    # untar
-    os.system("tar -zxvf ta-lib-0.4.0-src.tar.gz")
-    os.chdir("/tmp/ta-lib")
-    os.system("ls -la /app/equity/")
-    # build
-    os.system("./configure --prefix=/home/appuser")
-    os.system("make")
-    # install
-    os.system("make install")
-    # back to the cwd
-    os.chdir(default_cwd)
-    sys.stdout.flush()
+# # check if the library folder already exists, to avoid building everytime you load the pahe
+# if not os.path.isdir("/tmp/ta-lib"):
+#     # Download ta-lib to disk
+#     with open("/tmp/ta-lib-0.4.0-src.tar.gz", "wb") as file:
+#         response = requests.get(
+#             "http://prdownloads.sourceforge.net/ta-lib/ta-lib-0.4.0-src.tar.gz"
+#         )
+#         file.write(response.content)
+#     # get our current dir, to configure it back again. Just house keeping
+#     default_cwd = os.getcwd()
+#     os.chdir("/tmp")
+#     # untar
+#     os.system("tar -zxvf ta-lib-0.4.0-src.tar.gz")
+#     os.chdir("/tmp/ta-lib")
+#     os.system("ls -la /app/equity/")
+#     # build
+#     os.system("./configure --prefix=/home/appuser")
+#     os.system("make")
+#     # install
+#     os.system("make install")
+#     # back to the cwd
+#     os.chdir(default_cwd)
+#     sys.stdout.flush()
 
-# add the library to our current environment
-from ctypes import *
+# # add the library to our current environment
+# from ctypes import *
 
-os.system("ls -la /home/appuser/lib/libta*")
-lib = CDLL("/home/appuser/lib/libta_lib.so.0.0.0")
-# import library
-try:
-    import talib
-except ImportError:
-    subprocess.check_call(
-        [
-            sys.executable,
-            "-m",
-            "pip",
-            "install",
-            "--global-option=build_ext",
-            "--global-option=-L/home/appuser/lib",
-            "--global-option=-I/home/appuser/include",
-            "ta-lib",
-        ]
-    )
-finally:
-    import talib
+# os.system("ls -la /home/appuser/lib/libta*")
+# lib = CDLL("/home/appuser/lib/libta_lib.so.0.0.0")
+# # import library
+# try:
+#     import talib
+# except ImportError:
+#     subprocess.check_call(
+#         [
+#             sys.executable,
+#             "-m",
+#             "pip",
+#             "install",
+#             "--global-option=build_ext",
+#             "--global-option=-L/home/appuser/lib",
+#             "--global-option=-I/home/appuser/include",
+#             "ta-lib",
+#         ]
+#     )
+# finally:
+#     import talib
 
 # here goes your code
 
@@ -63,7 +63,7 @@ import plotly.graph_objects as go
 from plotly.subplots import make_subplots
 import numpy as np
 
-# import talib
+import talib
 from sklearn.preprocessing import StandardScaler
 from sklearn.decomposition import PCA
 from sklearn.manifold import TSNE
@@ -95,7 +95,7 @@ st.set_page_config(page_title="Market Profile Chart (India Nifty 500)", layout="
 
 ticker = st.sidebar.selectbox("Choose a Nifty 500 Stock", symbols)
 
-i = st.sidebar.selectbox("Interval", ("1h", "1d", "5d", "1wk", "1mo"))
+i = st.sidebar.selectbox("Interval", ("5m", "15m", "1h", "1d", "5d", "1wk", "1mo"))
 
 
 p = st.sidebar.number_input(
@@ -351,6 +351,12 @@ for val in X_embedded:
 
 st.write("Low Dimension visualization")
 st.write(pd.Series(predict_clust).value_counts())
+st.write(
+    "Please check if 0 and 1 have similar values. If not try different parameters."
+)
+st.write(
+    "2: No Trend, Model not confident . If too many 2 values, try different clustering"
+)
 fig1 = px.scatter(
     x=X_embedded[:, 0],
     y=X_embedded[:, 1],
@@ -380,7 +386,9 @@ fig1 = px.scatter(
 )
 # st.plotly_chart(fig1, use_container_width=True, config=config)
 st.plotly_chart(fig1, use_container_width=True)
-
+st.write("Please infer if color 0 is uptrend or downtrend.")
+st.write("Please infer if color 1 is uptrend or downtrend.")
+st.write("Color 2 is where model is not confident, can treat as no trend.")
 
 ticks = int(ticks)
 st.write(f"Last {ticks} ticks")
@@ -394,5 +402,5 @@ st.plotly_chart(fig1, use_container_width=True, config=config)
 
 
 st.write("Sample prediction of last tick from GMM")
-st.write(f"Cluster: {gm.predict([X_embedded[-1]])[0]}")
-st.write(f"Cluster probability: {np.max(gm.predict_proba([X_embedded[-1]])):.4f}")
+st.write(f"Color: {gm.predict([X_embedded[-1]])[0]}")
+st.write(f"Color probability: {np.max(gm.predict_proba([X_embedded[-1]])):.4f}")
