@@ -95,11 +95,13 @@ st.set_page_config(page_title="Market Profile Chart (India Nifty 500)", layout="
 
 ticker = st.sidebar.selectbox("Choose a Nifty 500 Stock", symbols)
 
-i = st.sidebar.selectbox("Interval", ("5m", "15m", "1h", "1d", "5d", "1wk", "1mo"))
+i = st.sidebar.selectbox(
+    "Interval", ("5m", "15m", "30m", "1h", "1d", "5d", "1wk", "1mo")
+)
 
 
 p = st.sidebar.number_input(
-    "How many days (21-6000)", min_value=21, max_value=6000, step=1
+    "How many days (60-6000)", min_value=60, max_value=6000, step=1
 )
 
 clustering = st.sidebar.selectbox("Clustering", ("PCA", "T-SNE"))
